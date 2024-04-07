@@ -19,11 +19,6 @@ public class Database {
      */
     private static final String location = "database.db";
 
-    /**
-     * Currently only table needed
-     */
-    private static final String requiredTable = "Expense";
-
     public static boolean isOK() {
         if (!checkDrivers()) return false; //driver errors
 
@@ -53,7 +48,7 @@ public class Database {
     }
 
     private static boolean createTableIfNotExists() {
-        String createTables =
+        String createExpenseTables =
                 """
                         CREATE TABLE IF NOT EXISTS expense(
                              date TEXT NOT NULL,
@@ -66,10 +61,24 @@ public class Database {
                              other REAL NOT NULL
                      );
                    """;
+        String createIncomeTables =
+                """
+                        CREATE TABLE IF NOT EXISTS income(
+                             date TEXT NOT NULL,
+                             salary REAL NOT NULL,
+                             help REAL NOT NULL,
+                             autoBusiness REAL NOT NULL,
+                             passiveIncome REAL NOT NULL,
+                             other REAL NOT NULL
+                     );
+                   """;
 
         try (Connection connection = Database.connect()) {
-            PreparedStatement statement = connection.prepareStatement(createTables);
-            statement.executeUpdate();
+            PreparedStatement expenseStatement = connection.prepareStatement(createExpenseTables);
+            expenseStatement.executeUpdate();
+
+            PreparedStatement incomeStatement = connection.prepareStatement(createIncomeTables);
+            incomeStatement.executeUpdate();
             return true;
         } catch (SQLException exception) {
             log.error("Could not create tables in database", exception);

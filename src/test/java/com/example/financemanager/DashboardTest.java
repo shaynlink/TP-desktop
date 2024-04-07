@@ -58,11 +58,12 @@ public class DashboardTest {
             verifyThat(menu, MenuItemMatchers.hasText("Navigation"));
             verifyThat(menu.getItems().get(0), MenuItemMatchers.hasText("Tableau de bord"));
             verifyThat(menu.getItems().get(1), MenuItemMatchers.hasText("Dépenses"));
+            verifyThat(menu.getItems().get(2), MenuItemMatchers.hasText("Revenus"));
         });
     }
 
     @Test
-    public void shouldChangeStageWhenClickOnMenu(FxRobot robot) throws TimeoutException {
+    public void shouldChangeToExpenseStageWhenClickOnMenu(FxRobot robot) throws TimeoutException {
         robot.clickOn("Navigation");
 
         WaitForAsyncUtils.waitFor(2, TimeUnit.SECONDS, () -> robot.lookup("Dépenses").match(NodeQueryUtils.isVisible()).tryQuery().isPresent());
@@ -101,5 +102,16 @@ public class DashboardTest {
         verifyThat("#lineChart", isVisible());
 
         assertThat(robot.lookup("#lineChart").queryAs(LineChart.class).getTitle(), equalTo("Évolution des dépenses"));
+    }
+
+    @Test
+    public void shouldChangeToIncomeStageWhenClickOnMenu(FxRobot robot) throws TimeoutException {
+        robot.clickOn("Navigation");
+
+        WaitForAsyncUtils.waitFor(2, TimeUnit.SECONDS, () -> robot.lookup("Revenus").match(NodeQueryUtils.isVisible()).tryQuery().isPresent());
+
+        robot.clickOn("Revenus", Motion.VERTICAL_FIRST, MouseButton.PRIMARY);
+
+        verifyThat(".title-text", hasText("Tableau récapitulatif des revenus"));
     }
 }
